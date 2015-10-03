@@ -20,6 +20,10 @@ package example02_preview
 		
 		public function PreviewExample() 
 		{
+			stage.scaleMode = "noScale";
+			stage.align = "TL";
+			stage.frameRate = 60;
+			
 			//シーンの初期化
 			scene = new Scene3D();
 			scene.addEventListener(Event.COMPLETE, scene_completeHandler);

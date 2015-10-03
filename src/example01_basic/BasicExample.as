@@ -7,6 +7,7 @@ package example01_basic
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import net.morocoshi.moja3d.materials.Material;
+	import net.morocoshi.moja3d.materials.TriangleFace;
 	import net.morocoshi.moja3d.objects.AmbientLight;
 	import net.morocoshi.moja3d.objects.DirectionalLight;
 	import net.morocoshi.moja3d.primitives.Plane;
@@ -14,6 +15,7 @@ package example01_basic
 	import net.morocoshi.moja3d.resources.ImageTextureResource;
 	import net.morocoshi.moja3d.shaders.render.FillShader;
 	import net.morocoshi.moja3d.shaders.render.LambertShader;
+	import net.morocoshi.moja3d.shaders.render.OpacityShader;
 	import net.morocoshi.moja3d.shaders.render.SpecularShader;
 	import net.morocoshi.moja3d.shaders.render.TextureShader;
 	import net.morocoshi.moja3d.view.Scene3D;
@@ -23,20 +25,23 @@ package example01_basic
 	 * 
 	 * @author tencho
 	 */
+	[SWF(width="640", height="480")]
 	public class BasicExample extends Sprite 
 	{
 		private var scene:Scene3D;
 		private var sphere:Sphere;
 		private var plane:Plane;
 		
+		[Embed(source = "map.png")] private var Map:Class;
 		[Embed(source = "wood.jpg")] private var Wood:Class;
+		[Embed(source = "icon.png")] private var Icon:Class;
 		
 		public function BasicExample() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";
+			stage.frameRate = 60;
 			stage.color = 0x222222;
-			
 			
 			//最初にビューポート、カメラ、ワールド空間などがセットになったScene3Dを作成する
 			scene = new Scene3D();
@@ -52,59 +57,58 @@ package example01_basic
 		{
 			scene.removeEventListener(Event.COMPLETE, scene_completeHandler);
 			
-			
-			//ビューポートをStageに配置すると3D画面が表示される
-			addChild(scene.view);
 			//Stats表示
 			addChild(scene.stats);
 			
-			
 			//ビューポートの位置とサイズと背景色を設定
-			scene.view.x = 5;
-			scene.view.y = 5;
-			scene.view.setSize(600, 400);
+			scene.view.x = 10;
+			scene.view.y = 10;
+			scene.view.setSize(620, 460);
 			scene.view.backgroundColor = 0x445544;
-			
 			
 			//レンダリングに使用されるカメラの向きを設定
 			scene.camera.setPositionXYZ(0, 100, 75);
 			scene.camera.lookAtXYZ(0, 0, 0);
 			
-			
-			//平行光源と環境光をScene3D.rootに追加する
+			//平行光源と環境光をScene3D.root（ワールド空間）に追加する
 			var sunLight:DirectionalLight = new DirectionalLight(0xffffff, 1.5);
 			sunLight.setPositionXYZ(40, 40, 40);
 			sunLight.lookAtXYZ(0, 0, 0);
 			scene.root.addChild(sunLight);
 			scene.root.addChild(new AmbientLight(0xffffff, 0.3));
 			
+			//テクスチャ用リソースを作成（Bitmap、BitmapData、ATFデータなどから作成）
+			var diffuse1:ImageTextureResource = new ImageTextureResource(new Wood);
+			var opacity1:ImageTextureResource = new ImageTextureResource(new Icon);
+			var opacity2:ImageTextureResource = new ImageTextureResource(new Map);
 			
 			//MaterialクラスのshaderListに各種シェーダーを追加してマテリアルを作成する
 			var material1:Material = new Material();
-			material1.shaderList.addShader(new FillShader(0x2299aa, 1));//基本色
+			material1.shaderList.addShader(new TextureShader(diffuse1, opacity1));//テクスチャ（opacityはnullにできる）
 			material1.shaderList.addShader(new LambertShader());//光源による陰影付け
-			material1.shaderList.addShader(new SpecularShader(50, 0.7, false, true, true));//光沢
 			
 			var material2:Material = new Material();
-			var bitmapData:BitmapData = Bitmap(new Wood()).bitmapData;
-			var textureResource:ImageTextureResource = new ImageTextureResource(bitmapData);
-			material2.shaderList.addShader(new TextureShader(textureResource, null));//画像テクスチャ
+			material2.culling = TriangleFace.BOTH;//両面表示
+			material2.shaderList.addShader(new FillShader(0x2299aa, 1));//基本色
+			material2.shaderList.addShader(new OpacityShader(opacity2));//不透明度マップ
 			material2.shaderList.addShader(new LambertShader());//光源による陰影付け
+			material2.shaderList.addShader(new SpecularShader(50, 0.7, false, true, true));//光沢
 			
-			//プリミティブを作成し、マテリアルを設定する
-			sphere = new Sphere(25, 6, 4, material1);
-			sphere.x = -40;
-			plane = new Plane(50, 35, 1, 1, 0.5, 0.5, true, material2, material2);
-			plane.x = 40;
+			//プリミティブを作成し、マテリアルを貼る
+			sphere = new Sphere(35, 12, 8, material2);
+			sphere.x = -20;
+			sphere.y = -30;
+			plane = new Plane(50, 50, 1, 1, 0.5, 0.5, true, material1, material1);
+			plane.x = 20;
+			plane.y = 20;
 			
-			//モデルをScene3D.rootに追加する
+			//モデルをワールド空間に追加する
 			scene.root.addChild(sphere);
 			scene.root.addChild(plane);
 			
 			//モデルの表示に必要なリソースをアップロードする
 			sphere.upload(scene.context3D, false, false);
 			plane.upload(scene.context3D, false, false);
-			
 			
 			//毎フレーム処理
 			stage.addEventListener(Event.ENTER_FRAME, stage_enterFrameHandler);

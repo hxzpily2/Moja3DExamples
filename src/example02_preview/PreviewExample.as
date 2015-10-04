@@ -45,14 +45,14 @@ package example02_preview
 			//カメラをマウスドラッグでくるくるさせる
 			scene.setTPVController(stage, -90, 45, 150);
 			
-			//もしくるくるではなく空間内をキー操作で飛行したい場合はこっち
+			//もしくるくるではなく空間内をキー操作で移動したい場合はこっち
 			//scene.setFPVController(stage, false, 5);
 			
 			//適当にメッシュ生成
 			for (var i:int = 0; i < 30; i++) 
 			{
-				//とりあえず色を貼りたいだけならFillMaterial
 				var rgb:uint = int(Math.random() * 0xffffff);
+				//とりあえず色を貼りたいだけならFillMaterial
 				var mesh:Sphere = new Sphere(10, 6, 4, new FillMaterial(rgb, 1, false));
 				mesh.setPositionXYZ(Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 100 - 50);
 				scene.root.addChild(mesh);

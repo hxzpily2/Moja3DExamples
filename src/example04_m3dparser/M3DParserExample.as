@@ -65,6 +65,8 @@ package example04_m3dparser
 		
 		private function parser_completeHandler(e:Event):void 
 		{
+			parser.removeEventListener(Event.COMPLETE, parser_completeHandler);
+			
 			//パースされた時点では既に各種マテリアルには適当なシェーダーが割り当てられているので表示はできますが、
 			//ここではそれをいったんリセットしてシェーダーを1から設定しなおしてみます。
 			

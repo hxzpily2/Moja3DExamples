@@ -18,26 +18,27 @@ package
 		private var clickCallback:Function;
 		private var clickArgs:Array;
 		
-		public function LabelButton(x:Number = 0, y:Number = 0, text:String = "", click:Function = null, args:Array = null) 
+		public function LabelButton(text:String = "", size:Number = 100, click:Function = null, args:Array = null) 
 		{
-			this.x = x;
-			this.y = y;
 			clickCallback = click;
 			clickArgs = args;
 			
-			var padding:Number = 3;
+			var paddingX:Number = 5;
+			var paddingY:Number = 2;
 			label = new TextField();
-			label.defaultTextFormat = new TextFormat("Meiryo", 12, 0x0, false);
+			label.defaultTextFormat = new TextFormat("Meiryo", 14, 0x0, false);
 			label.autoSize = TextFieldAutoSize.LEFT;
 			label.text = text;
 			label.selectable = false;
-			label.x = label.y = padding;
+			label.x = paddingX
+			label.y = paddingY;
 			
 			frame = new Sprite();
 			frame.graphics.beginFill(0xeeeeee);
-			var w:Number = label.textWidth + padding * 2 + 5;
-			var h:Number = label.textHeight + padding * 2 + 3;
+			var w:Number = Math.max(size, label.textWidth + paddingX * 2 + 5);
+			var h:Number = label.textHeight + paddingY * 2 + 3;
 			frame.graphics.drawRoundRect(0, 0, w, h, 5, 5);
+			label.x = (w - label.textWidth - 5) * 0.5;
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, downHandler);
 			addEventListener(MouseEvent.CLICK, clickHandler);

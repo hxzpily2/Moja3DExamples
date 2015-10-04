@@ -75,16 +75,24 @@ package example03_camera
 			scene.camera = camera1;
 			changeMode_clickHandler(FOVMode.VERTICAL);
 			
-			var y:int = 130;
-			addChild(new LabelButton(10, y+=40, "CAMERA 1", changeCamera_clickHandler, [camera1]));
-			addChild(new LabelButton(10, y+=40, "CAMERA 2", changeCamera_clickHandler, [camera2]));
-			addChild(new LabelButton(10, y+=40, "CAMERA 3", changeCamera_clickHandler, [camera3]));
-			addChild(new LabelButton(10, y+=70, "VERTICAL", changeMode_clickHandler, [FOVMode.VERTICAL]));
-			addChild(new LabelButton(10, y+=40, "HOLIZONTAL", changeMode_clickHandler, [FOVMode.HOLIZONTAL]));
-			addChild(new LabelButton(10, y+=40, "INSCRIBED", changeMode_clickHandler, [FOVMode.INSCRIBED]));
-			addChild(new LabelButton(10, y+=40, "CIRCUMSCRIBED", changeMode_clickHandler, [FOVMode.CIRCUMSCRIBED]));
+			createButtons();
 			
 			addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+		}
+		
+		private function createButtons():void 
+		{
+			var list:LabelButtonList = new LabelButtonList(true, 10, 140);
+			list.setPosition(10, 170);
+			list.addButton("CAMERA 1", changeCamera_clickHandler, [camera1]);
+			list.addButton("CAMERA 2", changeCamera_clickHandler, [camera2]);
+			list.addButton("CAMERA 3", changeCamera_clickHandler, [camera3]);
+			list.addSpace(20);
+			list.addButton("VERTICAL", changeMode_clickHandler, [FOVMode.VERTICAL]);
+			list.addButton("HOLIZONTAL", changeMode_clickHandler, [FOVMode.HOLIZONTAL]);
+			list.addButton("INSCRIBED", changeMode_clickHandler, [FOVMode.INSCRIBED]);
+			list.addButton("CIRCUMSCRIBED", changeMode_clickHandler, [FOVMode.CIRCUMSCRIBED]);
+			addChild(list);
 		}
 		
 		private function enterFrameHandler(e:Event):void 

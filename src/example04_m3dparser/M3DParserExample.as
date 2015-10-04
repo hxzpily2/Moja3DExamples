@@ -106,7 +106,7 @@ package example04_m3dparser
 			scene.root.upload(scene.context3D, true, false);
 			
 			//アニメーションで、キーフレーム間の補完はしない設定にする
-			parser.animationPlayer.setInterpolationEnabled(false);
+			parser.animationPlayer.interpolationEnabled = false;
 			
 			addEventListener(Event.ENTER_FRAME, enterFrameHandler);
 			enterFrameHandler(null);

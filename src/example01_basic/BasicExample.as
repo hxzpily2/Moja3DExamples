@@ -21,7 +21,7 @@ package example01_basic
 	import net.morocoshi.moja3d.view.Scene3D;
 	
 	/**
-	 * 基本
+	 * Moja3Dのサンプルコード
 	 * 
 	 * @author tencho
 	 */

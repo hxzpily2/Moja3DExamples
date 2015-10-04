@@ -12,7 +12,7 @@ package example03_camera
 	import net.morocoshi.moja3d.view.Scene3D;
 	
 	/**
-	 * カメラの切り替え
+	 * カメラの切り替えサンプル
 	 * 
 	 * @author tencho
 	 */

@@ -9,7 +9,7 @@ package example02_preview
 	import net.morocoshi.moja3d.view.Scene3D;
 	
 	/**
-	 * とりあえずモデルを表示して、確認したい人向けの簡易設定
+	 * とりあえずモデルを表示して、確認したい人向けの簡易設定サンプル
 	 * 
 	 * @author tencho
 	 */

@@ -38,7 +38,7 @@ package example04_m3dparser
 			
 			scene = new Scene3D();
 			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
-			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
+			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
 		}
 		
 		private function scene_completeHandler(e:Event):void 

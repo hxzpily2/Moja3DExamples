@@ -50,7 +50,7 @@ package example01_basic
 			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
 			
 			//初期化開始。プロファイルにContext3DProfile.STANDARD～を設定するとAGAL2モードになる。
-			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.STANDARD);
+			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
 		}
 		
 		private function scene_completeHandler(e:Event):void 

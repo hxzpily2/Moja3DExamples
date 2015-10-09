@@ -1,4 +1,4 @@
-package example06_stagevideo 
+package example06_starling 
 {
 	import net.morocoshi.common.math.random.Random;
 	import starling.display.Quad;

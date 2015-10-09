@@ -1,4 +1,4 @@
-package example06_stagevideo 
+package example06_starling 
 {
 	import flash.display.Sprite;
 	import flash.display3D.Context3DProfile;

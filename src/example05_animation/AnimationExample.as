@@ -72,7 +72,7 @@ package example05_animation
 			scene.root.upload(scene.context3D, true, false);
 			
 			//モーションを適用するスキンを特定しておきます
-			var skinObject:Skin = parser.hierarchy[0] as Skin;
+			var skinObject:Skin = parser.hierarchy[2] as Skin;
 			
 			//各種モーションデータをパースします。
 			//第二引数では補完方法がベジェ曲線だった場合に曲線上に打つキーフレームの間隔を秒単位で指定します。

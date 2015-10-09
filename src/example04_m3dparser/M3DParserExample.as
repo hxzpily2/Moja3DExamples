@@ -10,7 +10,7 @@ package example04_m3dparser
 	import net.morocoshi.moja3d.materials.TriangleFace;
 	import net.morocoshi.moja3d.objects.AmbientLight;
 	import net.morocoshi.moja3d.objects.DirectionalLight;
-	import net.morocoshi.moja3d.shaders.render.DistanceFogShader;
+	import net.morocoshi.moja3d.shaders.render.DistanceColorFogShader;
 	import net.morocoshi.moja3d.shaders.render.HalfLambertShader;
 	import net.morocoshi.moja3d.shaders.render.ReflectionShader;
 	import net.morocoshi.moja3d.shaders.render.SpecularShader;
@@ -71,7 +71,7 @@ package example04_m3dparser
 			//ここではそれをいったんリセットしてシェーダーを1から設定しなおしてみます。
 			
 			var specularShader:SpecularShader = new SpecularShader(30, 1, false);
-			var fogShader:DistanceFogShader = new DistanceFogShader(0x0, 50, 800, 0, 1);
+			var fogShader:DistanceColorFogShader = new DistanceColorFogShader(0x0, 50, 800, 0, 1);
 			var halfLambertShader:HalfLambertShader = new HalfLambertShader();
 			
 			for each(var material:ParserMaterial in parser.materials)

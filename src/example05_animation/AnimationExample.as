@@ -92,7 +92,7 @@ package example05_animation
 			
 			//とりあえず適当なモーションを再生しておきます。
 			//初回モーション再生時はモーションブレンドができないので第二引数は反映されません。
-			motionController.play("stay", 0, 1);
+			motionController.play("stay", 0, 0);
 			
 			createButtons();
 			
@@ -113,7 +113,7 @@ package example05_animation
 		private function changeMotion_clickHandler(motionID:String):void 
 		{
 			//モーション切り替え
-			motionController.play(motionID, 0.3, 2);
+			motionController.play(motionID, 0.3, 0, 2);
 		}
 		
 		private function enterFrameHandler(e:Event):void 

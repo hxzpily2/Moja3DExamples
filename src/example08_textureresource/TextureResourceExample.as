@@ -54,6 +54,7 @@ package example08_textureresource
 			
 			//モデルを配置するコンテナ
 			container = new Object3D();
+			container.name = "container";
 			scene.root.addChild(new AmbientLight(0xffffff, 0.5));
 			scene.root.addChild(new DirectionalLight(0xffffff, 1.0)).lookAtXYZ(5, 5, -5);
 			scene.root.addChild(container);
@@ -67,6 +68,16 @@ package example08_textureresource
 		private function parser_completeHandler(e:Event):void 
 		{
 			parser.removeEventListener(Event.COMPLETE, parser_completeHandler);
+			
+			//ティーポットの参照コピーを配置して、マテリアルだけ複製する
+			for (var i:int = 1; i <= 3; i++) 
+			{
+				var copy:Object3D = container.reference();
+				scene.root.addChild(copy).y = i * 70;
+				var teapot:Mesh = copy.getChildAt(0) as Mesh;
+				//マテリアルだけは参照ではなく複製にする
+				teapot.surfaces[0].material = teapot.surfaces[0].material.clone();
+			}
 			
 			//ボタンリスト
 			var buttonList:LabelButtonList = new LabelButtonList(true, 15, 150);

@@ -5,6 +5,7 @@ package example05_animation
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import net.morocoshi.common.math.random.Random;
 	import net.morocoshi.moja3d.animation.MotionController;
 	import net.morocoshi.moja3d.animation.MotionData;
 	import net.morocoshi.moja3d.loader.M3DParser;
@@ -86,13 +87,13 @@ package example05_animation
 			motionController.setObject(skinObject);
 			
 			//各種モーションデータを登録します。再生する時はここで設定したIDを使います。
-			motionController.addMotion("run", runMotion);
+			motionController.addMotion("run", runMotion, 0.3, 1.33);
 			motionController.addMotion("walk", walkMotion);
 			motionController.addMotion("stay", stayMotion);
 			
 			//とりあえず適当なモーションを再生しておきます。
 			//初回モーション再生時はモーションブレンドができないので第二引数は反映されません。
-			motionController.play("stay", 0, 0);
+			motionController.changeMotion("stay", 0, 0);
 			
 			createButtons();
 			
@@ -107,19 +108,37 @@ package example05_animation
 			list.addButton("STAY", changeMotion_clickHandler, ["stay"]);
 			list.addButton("WALK", changeMotion_clickHandler, ["walk"]);
 			list.addButton("RUN", changeMotion_clickHandler, ["run"]);
+			list.addButton("PLAY", play_clickHandler, []);
+			list.addButton("STOP", stop_clickHandler, []);
+			list.addButton("RANDOM", random_clickHandler, []);
 			addChild(list);
+		}
+		
+		private function random_clickHandler():void 
+		{
+			motionController.setMotionTime(Random.number(0, motionController.current.timeLength));
+		}
+		
+		private function play_clickHandler():void 
+		{
+			motionController.play();
+		}
+		
+		private function stop_clickHandler():void 
+		{
+			motionController.stop();
 		}
 		
 		private function changeMotion_clickHandler(motionID:String):void 
 		{
 			//モーション切り替え
-			motionController.play(motionID, 0.3, 0, 2);
+			motionController.changeMotion(motionID, 0.5, 0, 2);
 		}
 		
 		private function enterFrameHandler(e:Event):void 
 		{
 			//時間指定でアニメーションを更新させる
-			motionController.setTime(getTimer() / 1000);
+			motionController.update();
 		}
 		
 	}

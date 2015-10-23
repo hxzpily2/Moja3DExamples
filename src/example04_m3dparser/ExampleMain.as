@@ -16,20 +16,21 @@ package example04_m3dparser
 	import net.morocoshi.moja3d.shaders.render.SpecularShader;
 	import net.morocoshi.moja3d.view.Scene3D;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * M3Dモデルをパースするサンプル
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class M3DParserExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
 		private var scene:Scene3D;
 		private var parser:M3DParser;
 		
-		[Embed(source = "primitives.m3d", mimeType = "application/octet-stream")] private var Model:Class;
+		[Embed(source = "asset/primitives.m3d", mimeType = "application/octet-stream")] private var Model:Class;
 		
-		public function M3DParserExample() 
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";

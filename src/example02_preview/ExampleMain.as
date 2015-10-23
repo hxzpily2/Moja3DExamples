@@ -8,17 +8,18 @@ package example02_preview
 	import net.morocoshi.moja3d.primitives.Sphere;
 	import net.morocoshi.moja3d.view.Scene3D;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * とりあえずモデルを表示して、確認したい人向けの簡易設定サンプル
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class PreviewExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
 		private var scene:Scene3D;
 		
-		public function PreviewExample() 
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";

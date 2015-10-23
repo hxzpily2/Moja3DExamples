@@ -1,7 +1,5 @@
 package example01_basic 
 {
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display3D.Context3DProfile;
 	import flash.display3D.Context3DRenderMode;
@@ -20,23 +18,24 @@ package example01_basic
 	import net.morocoshi.moja3d.shaders.render.TextureShader;
 	import net.morocoshi.moja3d.view.Scene3D;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * Moja3Dのサンプルコード
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class BasicExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
 		private var scene:Scene3D;
 		private var sphere:Sphere;
 		private var plane:Plane;
 		
-		[Embed(source = "map.png")] private var Map:Class;
-		[Embed(source = "wood.jpg")] private var Wood:Class;
-		[Embed(source = "icon.png")] private var Icon:Class;
+		[Embed(source = "asset/map.png")] private var Map:Class;
+		[Embed(source = "asset/wood.jpg")] private var Wood:Class;
+		[Embed(source = "asset/icon.png")] private var Icon:Class;
 		
-		public function BasicExample() 
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";

@@ -14,24 +14,25 @@ package example07_resourcepack
 	import net.morocoshi.moja3d.resources.ResourcePack;
 	import net.morocoshi.moja3d.view.Scene3D;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * モデルのテクスチャを切り替えるサンプル
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class ResourcepackExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
-		[Embed(source = "primitives.m3d", mimeType = "application/octet-stream")] private var Model:Class;
-		[Embed(source = "asset1/dirt_01.png")]private var Image1:Class;		
-		[Embed(source = "asset1/dirt_03.png")]private var Image2:Class;		
-		[Embed(source = "asset1/wood_04.png")]private var Image3:Class;		
-		[Embed(source = "asset1/tan_webbing.png")]private var Image4:Class;		
+		[Embed(source = "asset/primitives.m3d", mimeType = "application/octet-stream")] private var Model:Class;
+		[Embed(source = "asset/dirt_01.png")]private var Image1:Class;		
+		[Embed(source = "asset/dirt_03.png")]private var Image2:Class;		
+		[Embed(source = "asset/wood_04.png")]private var Image3:Class;		
+		[Embed(source = "asset/tan_webbing.png")]private var Image4:Class;		
 		
 		private var scene:Scene3D;
 		private var container:Object3D;
 		
-		public function ResourcepackExample() 
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";

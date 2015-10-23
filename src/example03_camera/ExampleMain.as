@@ -11,20 +11,21 @@ package example03_camera
 	import net.morocoshi.moja3d.view.FOVMode;
 	import net.morocoshi.moja3d.view.Scene3D;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * カメラの切り替えサンプル
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class CameraExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
 		private var scene:Scene3D;
 		private var camera1:Camera3D;
 		private var camera2:Camera3D;
 		private var camera3:Camera3D;
 		
-		public function CameraExample() 
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";

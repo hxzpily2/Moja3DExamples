@@ -1,5 +1,7 @@
 package example06_starling 
 {
+	import example06_starling.starling.StarlingBackLayer;
+	import example06_starling.starling.StarlingFrontLayer;
 	import flash.display.Sprite;
 	import flash.display3D.Context3DProfile;
 	import flash.display3D.Context3DRenderMode;
@@ -12,13 +14,14 @@ package example06_starling
 	import net.morocoshi.moja3d.view.Scene3D;
 	import starling.core.Starling;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * Starling+Moja3Dの表示サンプル
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class StarlingExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
 		private var scene:Scene3D;
 		private var parser:M3DParser;
@@ -26,8 +29,8 @@ package example06_starling
 		private var starlingBack:Starling;
 		private var starlingFront:Starling;
 		
-		[Embed(source = "teapot.m3d", mimeType = "application/octet-stream")] private var Model:Class;
-		public function StarlingExample() 
+		[Embed(source = "asset/teapot.m3d", mimeType = "application/octet-stream")] private var Model:Class;
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";

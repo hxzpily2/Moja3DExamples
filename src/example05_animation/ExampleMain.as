@@ -4,6 +4,9 @@ package example05_animation
 	import flash.display3D.Context3DProfile;
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.utils.getTimer;
 	import net.morocoshi.common.math.random.Random;
 	import net.morocoshi.moja3d.animation.MotionController;
@@ -14,28 +17,30 @@ package example05_animation
 	import net.morocoshi.moja3d.objects.Skin;
 	import net.morocoshi.moja3d.view.Scene3D;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * アニメーションのサンプル
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class AnimationExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
 		private var scene:Scene3D;
 		private var parser:M3DParser;
 		private var motionController:MotionController;
+		private var label:TextField;
 		
-		[Embed(source = "chara_model.m3d", mimeType = "application/octet-stream")] private var Model:Class;
-		[Embed(source = "chara_run.m3d", mimeType = "application/octet-stream")] private var Run:Class;
-		[Embed(source = "chara_walk.m3d", mimeType = "application/octet-stream")] private var Walk:Class;
-		[Embed(source = "chara_stay.m3d", mimeType = "application/octet-stream")] private var Stay:Class;
+		[Embed(source = "asset/chara_model.m3d", mimeType = "application/octet-stream")] private var Model:Class;
+		[Embed(source = "asset/chara_run.m3d", mimeType = "application/octet-stream")] private var Run:Class;
+		[Embed(source = "asset/chara_walk.m3d", mimeType = "application/octet-stream")] private var Walk:Class;
+		[Embed(source = "asset/chara_stay.m3d", mimeType = "application/octet-stream")] private var Stay:Class;
 		
-		public function AnimationExample() 
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";
-			stage.frameRate = 60;
+			stage.frameRate = 30;
 			stage.color = 0x666666;
 			
 			scene = new Scene3D();
@@ -103,6 +108,12 @@ package example05_animation
 		
 		private function createButtons():void 
 		{
+			label = new TextField();
+			label.x = 95;
+			label.defaultTextFormat = new TextFormat(null, 12, 0xffffff);
+			label.autoSize = TextFieldAutoSize.LEFT;
+			
+			stage.addChild(label);
 			var list:LabelButtonList = new LabelButtonList(true, 10, 80);
 			list.setPosition(10, 170);
 			list.addButton("STAY", changeMotion_clickHandler, ["stay"]);
@@ -116,7 +127,7 @@ package example05_animation
 		
 		private function random_clickHandler():void 
 		{
-			motionController.setMotionTime(Random.number(0, motionController.current.timeLength));
+			motionController.setTime(Random.number(0, motionController.current.timeLength));
 		}
 		
 		private function play_clickHandler():void 
@@ -132,13 +143,14 @@ package example05_animation
 		private function changeMotion_clickHandler(motionID:String):void 
 		{
 			//モーション切り替え
-			motionController.changeMotion(motionID, 0.5, 0, 2);
+			motionController.changeMotion(motionID, 0.5, 0, 0.1);
 		}
 		
 		private function enterFrameHandler(e:Event):void 
 		{
 			//時間指定でアニメーションを更新させる
 			motionController.update();
+			label.text = String(motionController.getFrame());
 		}
 		
 	}

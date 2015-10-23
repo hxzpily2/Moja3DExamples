@@ -17,13 +17,14 @@ package example08_textureresource
 	import net.morocoshi.moja3d.shaders.render.TextureShader;
 	import net.morocoshi.moja3d.view.Scene3D;
 	
+	[SWF(width = "640", height = "480")]
+	
 	/**
 	 * モデルのテクスチャを弄るサンプル
 	 * 
 	 * @author tencho
 	 */
-	[SWF(width="640", height="480")]
-	public class TextureResourceExample extends Sprite 
+	public class ExampleMain extends Sprite 
 	{
 		[Embed(source = "asset/mappedTeapot.m3d", mimeType = "application/octet-stream")] private var Model:Class;
 		
@@ -31,7 +32,7 @@ package example08_textureresource
 		private var container:Object3D;
 		private var parser:M3DParser;
 		
-		public function TextureResourceExample() 
+		public function ExampleMain() 
 		{
 			stage.scaleMode = "noScale";
 			stage.align = "TL";

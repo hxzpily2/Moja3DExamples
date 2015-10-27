@@ -99,7 +99,7 @@ package example13_rendertexture
 		 */
 		private function capture():void 
 		{
-			scene.renderSceneTo(capturedTexture, scene.root, null, scene.camera, scene.view, scene.filters);
+			scene.renderSceneTo(capturedTexture, scene.root, null, scene.camera, scene.view, scene.filters, false);
 		}
 		
 		private function startAutoCapture():void 

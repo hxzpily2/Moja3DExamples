@@ -1,21 +1,14 @@
 package example08_textureresource 
 {
 	import flash.display.BitmapData;
-	import flash.display.Sprite;
-	import flash.display3D.Context3DProfile;
-	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	import net.morocoshi.common.math.random.Random;
 	import net.morocoshi.moja3d.loader.M3DParser;
 	import net.morocoshi.moja3d.materials.Material;
-	import net.morocoshi.moja3d.objects.AmbientLight;
-	import net.morocoshi.moja3d.objects.DirectionalLight;
 	import net.morocoshi.moja3d.objects.Mesh;
-	import net.morocoshi.moja3d.objects.Object3D;
 	import net.morocoshi.moja3d.resources.ImageTextureResource;
 	import net.morocoshi.moja3d.shaders.render.TextureShader;
-	import net.morocoshi.moja3d.view.Scene3D;
 	
 	[SWF(width = "640", height = "480")]
 	
@@ -24,72 +17,45 @@ package example08_textureresource
 	 * 
 	 * @author tencho
 	 */
-	public class ExampleMain extends Sprite 
+	public class ExampleMain extends ExampleBase 
 	{
 		[Embed(source = "asset/mappedTeapot.m3d", mimeType = "application/octet-stream")] private var Model:Class;
 		
-		private var scene:Scene3D;
-		private var container:Object3D;
 		private var parser:M3DParser;
+		private var teapot:Mesh;
 		
 		public function ExampleMain() 
 		{
-			stage.scaleMode = "noScale";
-			stage.align = "TL";
-			stage.frameRate = 60;
-			
-			//シーンの初期化
-			scene = new Scene3D();
-			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
-			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
+			super(20);
 		}
 		
-		private function scene_completeHandler(e:Event):void 
+		override public function init():void 
 		{
-			scene.removeEventListener(Event.COMPLETE, scene_completeHandler);
-			
-			addChild(scene.stats);
-			scene.startRendering();
-			scene.view.startAutoResize(stage);
-			scene.setTPVController(stage, -90, 45, 100, 0, 0, 20);
-			
-			//モデルを配置するコンテナ
-			container = new Object3D();
-			container.name = "container";
-			scene.root.addChild(new AmbientLight(0xffffff, 0.5));
-			scene.root.addChild(new DirectionalLight(0xffffff, 1.0)).lookAtXYZ(5, 5, -5);
-			scene.root.addChild(container);
-			
 			//モデル読み込み
 			parser = new M3DParser();
 			parser.addEventListener(Event.COMPLETE, parser_completeHandler);
-			parser.parse(new Model, container);
+			parser.parse(new Model);
 		}
 		
 		private function parser_completeHandler(e:Event):void 
 		{
 			parser.removeEventListener(Event.COMPLETE, parser_completeHandler);
 			
-			//ティーポットの参照コピーを配置して、マテリアルだけ複製する
-			for (var i:int = 1; i <= 3; i++) 
-			{
-				var copy:Object3D = container.reference();
-				scene.root.addChild(copy).y = i * 70;
-				var teapot:Mesh = copy.getChildAt(0) as Mesh;
-				//マテリアルだけは参照ではなく複製にする
-				teapot.surfaces[0].material = teapot.surfaces[0].material.clone();
-			}
+			teapot = parser.objects[0] as Mesh;
+			scene.root.addChild(teapot);
 			
-			//ボタンリスト
-			var buttonList:LabelButtonList = new LabelButtonList(true, 15, 150);
-			buttonList.x = 10;
-			buttonList.y = 180;
-			buttonList.addButton("setTextureResource1()", setTextureResource1);
-			buttonList.addButton("setTextureResource2()", setTextureResource2);
-			addChild(buttonList);
+			//ティーポットの参照コピーを配置して、マテリアルだけ複製する
+			var copy:Mesh = teapot.reference() as Mesh;
+			copy.surfaces[0].material = copy.surfaces[0].material.clone(true);
+			scene.root.addChild(copy).y = 70;
+			
 			
 			//シーン内にある全てのリソースをまとめてアップロード
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
+			
+			//ボタン
+			buttons.addButton("setTextureResource1()", setTextureResource1);
+			buttons.addButton("setTextureResource2()", setTextureResource2);
 		}
 		
 		/**
@@ -97,8 +63,6 @@ package example08_textureresource
 		 */
 		private function setTextureResource1():void 
 		{
-			//ティーポットのモデルを特定
-			var teapot:Mesh = container.getChildAt(0) as Mesh;
 			//サーフェイスに貼られたマテリアルを取得
 			var material:Material = teapot.surfaces[0].material;
 			//マテリアル内のテクスチャシェーダーを取得
@@ -111,8 +75,7 @@ package example08_textureresource
 			bitmap.fillRect(new Rectangle(Random.number(0, 400), Random.number(0, 400), 64, 64), 0xff0000);
 			
 			//画像を再設定する。第二引数をtrueにするとPNG画像に透過要素があるかチェックして不透明画像ならdrawCallが減る可能性がある。でもチェックが重い。
-			//JPG画像のように透過要素が無いことが確定している場合はfalseのままでいい
-			imageResource.setBitmapResource(bitmap, false);
+			imageResource.setBitmapResource(bitmap, true);
 			//アップロード
 			imageResource.upload(scene.context3D, false);
 		}
@@ -122,18 +85,17 @@ package example08_textureresource
 		 */
 		private function setTextureResource2():void
 		{
-			//コンテナ内にあるImageTextureResourceを取得
-			var imageResource:ImageTextureResource = container.getResources(true, ImageTextureResource)[0] as ImageTextureResource;
+			//teapot内にあるImageTextureResourceを取得
+			var imageResource:ImageTextureResource = teapot.getResources(true, ImageTextureResource)[0] as ImageTextureResource;
 			
 			//リソース画像取得
 			var bitmap:BitmapData = imageResource.bitmapData;
 			bitmap.fillRect(new Rectangle(Random.number(0, 400), Random.number(0, 400), 64, 64), 0x0000ff);
 			
 			//画像を再設定する。第二引数をtrueにするとPNG画像に透過要素があるかチェックして不透明画像ならdrawCallが減る可能性がある。でもチェックが重い。
-			//JPG画像のように透過要素が無いことが確定している場合はfalseのままでいい
-			imageResource.setBitmapResource(bitmap, false);
+			imageResource.setBitmapResource(bitmap, true);
 			//アップロード
-			imageResource.upload(scene.context3D, false);
+			imageResource.upload(scene.context3D);
 		}
 		
 	}

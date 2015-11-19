@@ -1,103 +1,72 @@
-package example14_particle 
+package example12_particle 
 {
 	import flash.display.BitmapData;
-	import flash.display.Sprite;
-	import flash.display3D.Context3DProfile;
-	import flash.display3D.Context3DRenderMode;
-	import flash.events.Event;
 	import flash.geom.Vector3D;
 	import flash.utils.getTimer;
 	import net.morocoshi.common.graphics.Create;
 	import net.morocoshi.moja3d.materials.Material;
 	import net.morocoshi.moja3d.materials.preset.FillMaterial;
-	import net.morocoshi.moja3d.objects.AmbientLight;
-	import net.morocoshi.moja3d.objects.DirectionalLight;
 	import net.morocoshi.moja3d.particle.animators.ParticleAnimator;
 	import net.morocoshi.moja3d.particle.animators.SprayParticleAnimator;
 	import net.morocoshi.moja3d.particle.ParticleEmitter;
 	import net.morocoshi.moja3d.particle.ParticleSystem;
 	import net.morocoshi.moja3d.particle.range.CubeRange;
 	import net.morocoshi.moja3d.particle.range.ParticleRange;
+	import net.morocoshi.moja3d.particle.wind.TurbulenceWind;
 	import net.morocoshi.moja3d.primitives.Cube;
 	import net.morocoshi.moja3d.primitives.Plane;
 	import net.morocoshi.moja3d.primitives.Sphere;
 	import net.morocoshi.moja3d.resources.ImageTextureResource;
-	import net.morocoshi.moja3d.resources.RenderTextureResource;
 	import net.morocoshi.moja3d.shaders.render.FillShader;
 	import net.morocoshi.moja3d.shaders.render.LambertShader;
 	import net.morocoshi.moja3d.shaders.render.OpacityShader;
 	import net.morocoshi.moja3d.shaders.render.TextureShader;
-	import net.morocoshi.moja3d.view.Scene3D;
 	
 	[SWF(width = "640", height = "480")]
 	
 	/**
-	 * パーティクル
+	 * パーティクルのサンプル
 	 * 
 	 * @author tencho
 	 */
-	public class ExampleMain extends Sprite 
+	public class ExampleMain extends ExampleBase 
 	{
-		private var scene:Scene3D;
-		private var capturedTexture:RenderTextureResource;
 		private var system:ParticleSystem;
+		private var wind:TurbulenceWind;
 		
 		[Embed(source = "asset/smoke.png")] private var Smoke:Class;
 		
 		public function ExampleMain() 
 		{
-			stage.scaleMode = "noScale";
-			stage.align = "TL";
-			stage.frameRate = 60;
-			
-			//シーンの初期化
-			scene = new Scene3D();
-			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
-			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
+			super(100, 500, 60, 0x222222);
 		}
 		
-		private function scene_completeHandler(e:Event):void 
+		override public function init():void 
 		{
-			scene.removeEventListener(Event.COMPLETE, scene_completeHandler);
-			
-			addChild(scene.stats);
-			
-			//プレビュー設定
-			scene.startRendering();
-			scene.view.startAutoResize(stage);
-			scene.view.backgroundColor = 0x222222;
-			scene.setTPVController(stage, -45, 5, 500, 0, 0, 200);
-			
 			//3Dシーンの構成
 			var planeMaterial:Material = new Material();
-			planeMaterial.shadowThreshold = 0.1;
 			planeMaterial.shaderList.addShader(new FillShader(0x333333, 1));
 			planeMaterial.shaderList.addShader(new LambertShader());
 			scene.root.addChild(new Plane(1500, 1500, 1, 1, 0.5, 0.5, false, planeMaterial, null)).z = -1;
-			scene.root.addChild(new AmbientLight(0xffffff, 1));
-			scene.root.addChild(new DirectionalLight(0xffffff, 1.0)).lookAtXYZ(1, 4, -6);
-			
 			
 			//パーティクル生成
 			buildParticles();
 			
-			
 			scene.root.upload(scene.context3D, true, false);
-			
-			addEventListener(Event.EXIT_FRAME, tick);
-			tick(null);
 			
 			
 			//ボタンリスト
-			var buttonList:LabelButtonList = new LabelButtonList(true, 15, 150);
-			buttonList.x = 10;
-			buttonList.y = 180;
-			buttonList.addButton("60 FPS", setFPS, [60]);
-			buttonList.addButton("30 FPS", setFPS, [30]);
-			buttonList.addButton("15 FPS", setFPS, [15]);
-			buttonList.addButton("5 FPS", setFPS, [5]);
-			buttonList.addButton("ENABLED", switchEnabled, []);
-			addChild(buttonList);
+			buttons.addButton("60 FPS", setFPS, [60]);
+			buttons.addButton("30 FPS", setFPS, [30]);
+			buttons.addButton("15 FPS", setFPS, [15]);
+			buttons.addButton("5 FPS", setFPS, [5]);
+			buttons.addButton("WIND", switchWind, []);
+			buttons.addButton("ENABLED", switchEnabled, []);
+		}
+		
+		private function switchWind():void 
+		{
+			system.wind = system.wind? null : wind;
 		}
 		
 		private function switchEnabled():void 
@@ -113,7 +82,7 @@ package example14_particle
 			stage.frameRate = fps;
 		}
 		
-		private function tick(e:Event):void 
+		override public function tick():void 
 		{
 			var time:Number = getTimer() / 1000;
 			
@@ -127,8 +96,9 @@ package example14_particle
 			system.emitters[1].rotationX = time * 1.4; 
 			system.emitters[1].rotationY = time * 1.6;
 			
-			system.emitters[2].animator.setSpinSpeed(0, 0);
-			system.emitters[2].rotationZ = time; 
+			system.emitters[2].rotationZ = time;
+			
+			system.update();
 		}
 		
 		private function buildParticles():void 
@@ -143,24 +113,30 @@ package example14_particle
 			material.shaderList.addShader(new TextureShader(new ImageTextureResource(image), null));
 			material.shaderList.addShader(new OpacityShader(new ImageTextureResource(new Smoke)));
 			
+			var f:Number = 30;
 			var animator:ParticleAnimator = new ParticleAnimator();
 			animator.addAlphaKey(0, 0);
 			animator.addAlphaKey(0.1, 0.4);
 			animator.addAlphaKey(1, 0);
-			animator.setLife(1.5, 2);
-			animator.setScale(0.1, 0.2);
-			animator.setScaleSpeed(0.1, 0.2);
-			animator.setSpinSpeed(-0.5, 0.5);
-			animator.gravity = new Vector3D(0, 0, -0.01);
-			animator.velocityMin = new Vector3D(-0.2, -0.2, 1);
-			animator.velocityMax = new Vector3D(0.2, 0.2, 0.7);
+			animator.setLife(2, 3);
+			animator.setScale(0.2);
+			animator.setScaleSpeed(0.5);
+			animator.setSpinSpeed( -0.5, 0.5);
+			animator.friction = 0.5;
+			animator.gravity = new Vector3D(0, 0, -10);
+			animator.velocityMin = new Vector3D(-f, -f, -f);
+			animator.velocityMax = new Vector3D(f, f, f);
+			
+			wind = new TurbulenceWind();
+			wind.setNoise(124, 1500, 10);
+			wind.setIntensity(700);
 			
 			var emitter:ParticleEmitter = new ParticleEmitter();
 			emitter.particleWidth = 100;
 			emitter.particleHeight = 100;
 			emitter.range = new CubeRange(0, 0, 0);
 			emitter.animator = animator;
-			emitter.birthRate = 30;
+			emitter.birthRate = 20;
 			
 			system = new ParticleSystem(material);
 			system.addEmiter(emitter);
@@ -171,17 +147,22 @@ package example14_particle
 			spray.addAlphaKey(0, 1);
 			spray.addAlphaKey(1, 0);
 			spray.gravity.z = -300;
+			spray.friction = 0.5;
 			spray.setLife(1, 1.2);
-			spray.setScale(0.1, 0.1);
-			spray.setScaleSpeed(0.4, 0.5);
+			spray.setScale(0.2);
+			spray.setScaleSpeed(0.6);
 			spray.setSprayIntensity(500);
 			spray.setSprayRange(0, 20 / 180 * Math.PI);
 			
+			system.emitters[0].rotationX = 1.14;
+			system.emitters[1].enabled = false;
+			system.emitters[2].enabled = false;
+			
 			system.emitters[1].range = new ParticleRange();
 			system.emitters[1].animator = spray;
-			system.emitters[1].birthRate = 100;
+			system.emitters[1].birthRate = 80;
 			
-			system.emitters[2].range = new CubeRange(200, 10, 0);
+			system.emitters[2].range = new CubeRange(200, 0, 0);
 			system.emitters[2].animator.velocityMin.z = 200;
 			system.emitters[2].animator.velocityMax.z = 200;
 			system.emitters[2].birthRate = 100;
@@ -197,7 +178,7 @@ package example14_particle
 			}
 			
 			system.setContetx3D(scene.context3D);
-			system.startAutoUpdate();
+			system.play();
 			
 			scene.root.addChild(system);
 		}

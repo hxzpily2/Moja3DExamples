@@ -1,32 +1,24 @@
 package example05_animation 
 {
-	import flash.display.Sprite;
-	import flash.display3D.Context3DProfile;
-	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-	import flash.utils.getTimer;
 	import net.morocoshi.common.math.random.Random;
 	import net.morocoshi.moja3d.animation.MotionController;
 	import net.morocoshi.moja3d.animation.MotionData;
 	import net.morocoshi.moja3d.loader.M3DParser;
-	import net.morocoshi.moja3d.objects.AmbientLight;
-	import net.morocoshi.moja3d.objects.DirectionalLight;
 	import net.morocoshi.moja3d.objects.Skin;
-	import net.morocoshi.moja3d.view.Scene3D;
 	
 	[SWF(width = "640", height = "480")]
 	
 	/**
-	 * アニメーションのサンプル
+	 * キャラクターアニメーションのサンプル
 	 * 
 	 * @author tencho
 	 */
-	public class ExampleMain extends Sprite 
+	public class ExampleMain extends ExampleBase 
 	{
-		private var scene:Scene3D;
 		private var parser:M3DParser;
 		private var motionController:MotionController;
 		private var label:TextField;
@@ -38,30 +30,11 @@ package example05_animation
 		
 		public function ExampleMain() 
 		{
-			stage.scaleMode = "noScale";
-			stage.align = "TL";
-			stage.frameRate = 30;
-			stage.color = 0x666666;
-			
-			scene = new Scene3D();
-			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
-			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
+			super(45);
 		}
 		
-		private function scene_completeHandler(e:Event):void 
+		override public function init():void 
 		{
-			scene.removeEventListener(Event.COMPLETE, scene_completeHandler);
-			
-			addChild(scene.stats);
-			scene.startRendering();
-			scene.view.backgroundColor = 0x444444;
-			scene.view.startAutoResize(stage);
-			scene.setTPVController(stage, -90, 15, 150, 0, 0, 50);
-			
-			//ライト
-			scene.root.addChild(new AmbientLight(0xffffff, 0.7));
-			scene.root.addChild(new DirectionalLight(0xffffff, 0.8)).lookAtXYZ( -10, 10, -10);
-			
 			parser = new M3DParser();
 			parser.addEventListener(Event.COMPLETE, parser_completeHandler);
 			
@@ -88,41 +61,39 @@ package example05_animation
 			var stayMotion:MotionData = M3DParser.parseMotion(new Stay, bezierCurveInterval);
 			
 			motionController = new MotionController();
+			
 			//アニメーションする対象を含んだオブジェクトを指定します。今回はSkinオブジェクトを渡します。
 			motionController.setObject(skinObject);
 			
 			//各種モーションデータを登録します。再生する時はここで設定したIDを使います。
-			motionController.addMotion("run", runMotion, 0.3, 1.33);
+			motionController.addMotion("run", runMotion);
 			motionController.addMotion("walk", walkMotion);
 			motionController.addMotion("stay", stayMotion);
 			
 			//とりあえず適当なモーションを再生しておきます。
 			//初回モーション再生時はモーションブレンドができないので第二引数は反映されません。
 			motionController.changeMotion("stay", 0, 0);
+			motionController.play();
 			
-			createButtons();
-			
-			addEventListener(Event.ENTER_FRAME, enterFrameHandler);
-			enterFrameHandler(null);
-		}
-		
-		private function createButtons():void 
-		{
 			label = new TextField();
 			label.x = 95;
 			label.defaultTextFormat = new TextFormat(null, 12, 0xffffff);
 			label.autoSize = TextFieldAutoSize.LEFT;
-			
 			stage.addChild(label);
-			var list:LabelButtonList = new LabelButtonList(true, 10, 80);
-			list.setPosition(10, 170);
-			list.addButton("STAY", changeMotion_clickHandler, ["stay"]);
-			list.addButton("WALK", changeMotion_clickHandler, ["walk"]);
-			list.addButton("RUN", changeMotion_clickHandler, ["run"]);
-			list.addButton("PLAY", play_clickHandler, []);
-			list.addButton("STOP", stop_clickHandler, []);
-			list.addButton("RANDOM", random_clickHandler, []);
-			addChild(list);
+			
+			buttons.addButton("STAY", changeMotion_clickHandler, ["stay"]);
+			buttons.addButton("WALK", changeMotion_clickHandler, ["walk"]);
+			buttons.addButton("RUN", changeMotion_clickHandler, ["run"]);
+			buttons.addButton("PLAY", play_clickHandler, []);
+			buttons.addButton("STOP", stop_clickHandler, []);
+			buttons.addButton("RANDOM", random_clickHandler, []);
+		}
+		
+		override public function tick():void 
+		{
+			//時間指定でアニメーションを更新させる
+			motionController.update();
+			label.text = String(motionController.getFrame() | 0);
 		}
 		
 		private function random_clickHandler():void 
@@ -143,14 +114,7 @@ package example05_animation
 		private function changeMotion_clickHandler(motionID:String):void 
 		{
 			//モーション切り替え
-			motionController.changeMotion(motionID, 0.5, 0, 0.1);
-		}
-		
-		private function enterFrameHandler(e:Event):void 
-		{
-			//時間指定でアニメーションを更新させる
-			motionController.update();
-			label.text = String(motionController.getFrame());
+			motionController.changeMotion(motionID, 0.5, 0, 2);
 		}
 		
 	}

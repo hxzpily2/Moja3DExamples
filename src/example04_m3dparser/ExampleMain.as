@@ -1,20 +1,14 @@
 package example04_m3dparser 
 {
-	import flash.display.Sprite;
-	import flash.display3D.Context3DProfile;
-	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.utils.getTimer;
 	import net.morocoshi.moja3d.loader.M3DParser;
 	import net.morocoshi.moja3d.materials.ParserMaterial;
 	import net.morocoshi.moja3d.materials.TriangleFace;
-	import net.morocoshi.moja3d.objects.AmbientLight;
-	import net.morocoshi.moja3d.objects.DirectionalLight;
 	import net.morocoshi.moja3d.shaders.render.DistanceColorFogShader;
 	import net.morocoshi.moja3d.shaders.render.HalfLambertShader;
 	import net.morocoshi.moja3d.shaders.render.ReflectionShader;
 	import net.morocoshi.moja3d.shaders.render.SpecularShader;
-	import net.morocoshi.moja3d.view.Scene3D;
 	
 	[SWF(width = "640", height = "480")]
 	
@@ -23,39 +17,19 @@ package example04_m3dparser
 	 * 
 	 * @author tencho
 	 */
-	public class ExampleMain extends Sprite 
+	public class ExampleMain extends ExampleBase 
 	{
-		private var scene:Scene3D;
 		private var parser:M3DParser;
 		
 		[Embed(source = "asset/primitives.m3d", mimeType = "application/octet-stream")] private var Model:Class;
 		
 		public function ExampleMain() 
 		{
-			stage.scaleMode = "noScale";
-			stage.align = "TL";
-			stage.frameRate = 60;
-			stage.color = 0x666666;
-			
-			scene = new Scene3D();
-			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
-			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
+			super(20, 300);
 		}
 		
-		private function scene_completeHandler(e:Event):void 
+		override public function init():void 
 		{
-			scene.removeEventListener(Event.COMPLETE, scene_completeHandler);
-			
-			addChild(scene.stats);
-			scene.startRendering();
-			scene.view.backgroundColor = 0x444444;
-			scene.view.startAutoResize(stage);
-			scene.setTPVController(stage, -90, 45, 300, 0, 0, 20);
-			
-			//ライト
-			scene.root.addChild(new AmbientLight(0xffffff, 0.3));
-			scene.root.addChild(new DirectionalLight(0xffffff, 0.8)).lookAtXYZ( -10, 10, -10);
-			
 			parser = new M3DParser();
 			//パース完了時に呼び出されます
 			parser.addEventListener(Event.COMPLETE, parser_completeHandler);
@@ -96,24 +70,21 @@ package example04_m3dparser
 				material.shaderList.addShader(halfLambertShader);
 				material.shaderList.addShader(specularShader);
 				material.shaderList.addShader(fogShader);
-				
-				//この時点ではテクスチャシェーダーが持つExternalTextureResouceは空っぽなので、
-				//M3DParserが持つリソースパック内の画像データを各種リソースに渡す必要があります。
-				//これはM3Dデータ内に画像を含めた際に有効になります。
-				parser.resourcePack.attachTo(material.getResources(), false);
 			}
 			
+			//この時点ではテクスチャシェーダーが持つExternalTextureResouceは空っぽなので、
+			//M3DParserが持つリソースパック内の画像データを各種リソースに渡す必要があります。
+			//これはM3Dデータ内に画像を含めた際に有効になります。
+			parser.resourcePack.attachTo(scene.root.getResources(true), false);
+			
 			//まとめてアップロード
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
 			
 			//アニメーションで、キーフレーム間の補完はしない設定にする
 			parser.animationPlayer.interpolationEnabled = false;
-			
-			addEventListener(Event.ENTER_FRAME, enterFrameHandler);
-			enterFrameHandler(null);
 		}
 		
-		private function enterFrameHandler(e:Event):void 
+		override public function tick():void 
 		{
 			//時間指定でアニメーションを更新させる
 			parser.animationPlayer.setTime(getTimer() / 1000);

@@ -17,11 +17,11 @@ package example07_resourcepack
 	[SWF(width = "640", height = "480")]
 	
 	/**
-	 * モデルのテクスチャを切り替えるサンプル
+	 * モデルのテクスチャをリソースパックで切り替えるサンプル
 	 * 
 	 * @author tencho
 	 */
-	public class ExampleMain extends Sprite 
+	public class ExampleMain extends ExampleBase 
 	{
 		[Embed(source = "asset/primitives.m3d", mimeType = "application/octet-stream")] private var Model:Class;
 		[Embed(source = "asset/dirt_01.png")]private var Image1:Class;		
@@ -29,40 +29,23 @@ package example07_resourcepack
 		[Embed(source = "asset/wood_04.png")]private var Image3:Class;		
 		[Embed(source = "asset/tan_webbing.png")]private var Image4:Class;		
 		
-		private var scene:Scene3D;
 		private var container:Object3D;
 		
 		public function ExampleMain() 
 		{
-			stage.scaleMode = "noScale";
-			stage.align = "TL";
-			stage.frameRate = 60;
-			
-			//シーンの初期化
-			scene = new Scene3D();
-			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
-			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
+			super(0);
 		}
 		
-		private function scene_completeHandler(e:Event):void 
+		override public function init():void 
 		{
-			scene.removeEventListener(Event.COMPLETE, scene_completeHandler);
-			
-			addChild(scene.stats);
-			scene.startRendering();
-			scene.view.startAutoResize(stage);
-			scene.setTPVController(stage, -90, 45, 150);
-			
-			
 			//モデルを配置するコンテナ
 			container = new Object3D();
-			scene.root.addChild(new AmbientLight(0xffffff, 0.5));
-			scene.root.addChild(new DirectionalLight(0xffffff, 1.0)).lookAtXYZ(5, 5, -5);
 			scene.root.addChild(container);
+			
 			//モデル読み込み（画像が含まれなければCOMPLETEイベントを待たなくてもいい）
 			new M3DParser().parse(new Model, container);
-			
-			
+			scene.root.upload(scene.context3D, true);
+
 			//リソースパックの作成
 			
 			//テクスチャ画像を登録
@@ -79,18 +62,10 @@ package example07_resourcepack
 			resourcePack2.register("wood_04", new BitmapData(2, 2, false, 0xcc2244), false);
 			resourcePack2.register("tan_webbing", new BitmapData(2, 2, false, 0x009922), false);
 			
-			
 			//ボタンリスト
-			var buttonList:LabelButtonList = new LabelButtonList(true, 15, 140);
-			buttonList.x = 10;
-			buttonList.y = 180;
-			buttonList.addButton("ResourcePack1", setResourcePack, [resourcePack1]);
-			buttonList.addButton("ResourcePack2", setResourcePack, [resourcePack2]);
-			addChild(buttonList);
+			buttons.addButton("ResourcePack1", setResourcePack, [resourcePack1]);
+			buttons.addButton("ResourcePack2", setResourcePack, [resourcePack2]);
 			
-			
-			//シーン内にある全てのリソースをまとめてアップロード
-			scene.root.upload(scene.context3D, true, false);
 		}
 		
 		private function setResourcePack(resourcePack:ResourcePack):void 

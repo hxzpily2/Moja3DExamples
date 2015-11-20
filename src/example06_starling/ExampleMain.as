@@ -24,7 +24,7 @@ package example06_starling
 		[Embed(source = "asset/teapot.m3d", mimeType = "application/octet-stream")] private var Model:Class;
 		public function ExampleMain() 
 		{
-			super(20, 150, 30, 0x666666);
+			super(20, 150);
 		}
 		
 		override public function init():void 
@@ -56,7 +56,7 @@ package example06_starling
 			
 			
 			//ティーポット
-			new M3DParser().parse(new Model, scene.root).materials[0].shaderList.addShader(new SpecularShader(100, 2, false));
+			new M3DParser().parse(new Model, scene.root).materials[0].shaderList.addShader(new SpecularShader(1, 0.5, false));
 			
 			//まとめてアップロード
 			scene.root.upload(scene.context3D, true, false);

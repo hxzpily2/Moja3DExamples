@@ -4,6 +4,7 @@ package example01_basic
 	import flash.display3D.Context3DProfile;
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
+	import net.morocoshi.moja3d.config.LightSetting;
 	import net.morocoshi.moja3d.materials.Material;
 	import net.morocoshi.moja3d.materials.TriangleFace;
 	import net.morocoshi.moja3d.objects.AmbientLight;
@@ -68,6 +69,10 @@ package example01_basic
 			//レンダリングに使用されるカメラの向きを設定
 			scene.camera.setPositionXYZ(0, 100, 75);
 			scene.camera.lookAtXYZ(0, 0, 0);
+			
+			//光源の最大数をレンダリング前に設定
+			LightSetting.numDirectionalLights = 1;
+			LightSetting.numOmniLights = 0;
 			
 			//平行光源と環境光をScene3D.root（ワールド空間）に追加する
 			var sunLight:DirectionalLight = new DirectionalLight(0xffffff, 1.5);

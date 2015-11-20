@@ -31,11 +31,11 @@ package example09_billboard
 		override public function init():void 
 		{
 			var material:Material = new TextureMaterial(new ImageTextureResource(new IMAGE1, true), new ImageTextureResource(new IMAGE2, true), 1, true);
-			for (var i:int = 0; i < 100; i++) 
+			for (var i:int = 0; i < 30; i++) 
 			{
 				var p:Plane = new Plane(10, 10, 1, 1, 0.5, 0.5, false, material, null);
-				p.x = Math.cos(i / 100 * 6.28) * 100;
-				p.y = Math.sin(i / 100 * 6.28) * 100;
+				p.x = Math.cos(i / 30 * 6.28) * 50;
+				p.y = Math.sin(i / 30 * 6.28) * 50;
 				p.z = 0;
 				p.colorTransform = Palette.getFillColor(Random.integer(0, 0xffffff), 0.8, 0.7);
 				scene.billboard.addObject(p, false, true, "+z", "+x");

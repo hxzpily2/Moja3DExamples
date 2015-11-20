@@ -38,14 +38,14 @@ package example12_particle
 		
 		public function ExampleMain() 
 		{
-			super(100, 500, 60, 0x222222);
+			super(100, 500);
 		}
 		
 		override public function init():void 
 		{
 			//3Dシーンの構成
 			var planeMaterial:Material = new Material();
-			planeMaterial.shaderList.addShader(new FillShader(0x333333, 1));
+			planeMaterial.shaderList.addShader(new FillShader(0x666666, 1));
 			planeMaterial.shaderList.addShader(new LambertShader());
 			scene.root.addChild(new Plane(1500, 1500, 1, 1, 0.5, 0.5, false, planeMaterial, null)).z = -1;
 			

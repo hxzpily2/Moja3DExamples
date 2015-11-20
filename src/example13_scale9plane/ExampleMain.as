@@ -17,14 +17,14 @@ package example13_scale9plane
 	 */
 	public class ExampleMain extends ExampleBase 
 	{
-		[Embed(source = "asset/spriteSheet.png")] private var IMAGE1:Class;
+		[Embed(source = "asset/scale9.png")] private var IMAGE1:Class;
 		
 		private var parser:M3DParser;
 		private var plane:Scale9Plane;
 		
 		public function ExampleMain() 
 		{
-			super(0);
+			super(0, 500);
 		}
 		
 		override public function init():void 
@@ -32,9 +32,9 @@ package example13_scale9plane
 			var material:Material = new Material();
 			material.shaderList.addShader(new TextureShader(new ImageTextureResource(new IMAGE1, true), null));
 			
-			var w:Number = 100;
-			var h:Number = 100;
-			var scale9:Rectangle = new Rectangle(w / 4, h / 4, w / 2, h / 2);
+			var w:Number = 256;
+			var h:Number = 256;
+			var scale9:Rectangle = new Rectangle(80, 80, 96, 96);
 			plane = new Scale9Plane(w, h, scale9, 0.5, 0.5, true, material, material);
 			scene.root.addChild(plane);
 			

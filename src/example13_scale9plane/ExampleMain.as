@@ -2,7 +2,6 @@ package example13_scale9plane
 {
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
-	import net.morocoshi.moja3d.loader.M3DParser;
 	import net.morocoshi.moja3d.materials.Material;
 	import net.morocoshi.moja3d.primitives.Scale9Plane;
 	import net.morocoshi.moja3d.resources.ImageTextureResource;
@@ -19,7 +18,6 @@ package example13_scale9plane
 	{
 		[Embed(source = "asset/scale9.png")] private var IMAGE1:Class;
 		
-		private var parser:M3DParser;
 		private var plane:Scale9Plane;
 		
 		public function ExampleMain() 
@@ -29,13 +27,10 @@ package example13_scale9plane
 		
 		override public function init():void 
 		{
-			var material:Material = new Material();
-			material.shaderList.addShader(new TextureShader(new ImageTextureResource(new IMAGE1, true), null));
+			var material:Material = new Material([new TextureShader(new ImageTextureResource(new IMAGE1, true))]);
 			
-			var w:Number = 256;
-			var h:Number = 256;
 			var scale9:Rectangle = new Rectangle(80, 80, 96, 96);
-			plane = new Scale9Plane(w, h, scale9, 0.5, 0.5, true, material, material);
+			plane = new Scale9Plane(256, 256, scale9, 0.5, 0.5, true, material, material);
 			scene.root.addChild(plane);
 			
 			scene.root.upload(scene.context3D, true, false);

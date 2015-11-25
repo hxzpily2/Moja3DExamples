@@ -131,17 +131,18 @@ package example12_particle
 			wind.setNoise(124, 1500, 10);
 			wind.setIntensity(700);
 			
-			var emitter:ParticleEmitter = new ParticleEmitter();
-			emitter.particleWidth = 100;
-			emitter.particleHeight = 100;
-			emitter.range = new CubeRange(0, 0, 0);
-			emitter.animator = animator;
-			emitter.birthRate = 20;
+			var emitter1:ParticleEmitter = new ParticleEmitter();
+			emitter1.particleWidth = 100;
+			emitter1.particleHeight = 100;
+			emitter1.range = new CubeRange(0, 0, 0);
+			emitter1.animator = animator;
+			emitter1.birthRate = 20;
 			
-			system = new ParticleSystem(material);
-			system.addEmiter(emitter);
-			system.addEmiter(emitter.clone() as ParticleEmitter);
-			system.addEmiter(emitter.clone() as ParticleEmitter);
+			var emitter2:ParticleEmitter = emitter1.clone() as ParticleEmitter;
+			
+			var emitter3:ParticleEmitter = emitter1.clone() as ParticleEmitter;
+			
+			emitter1.rotationX = 1.14;
 			
 			var spray:SprayParticleAnimator = new SprayParticleAnimator();
 			spray.addAlphaKey(0, 1);
@@ -154,23 +155,25 @@ package example12_particle
 			spray.setSprayIntensity(500);
 			spray.setSprayRange(0, 20 / 180 * Math.PI);
 			
-			system.emitters[0].rotationX = 1.14;
-			system.emitters[1].enabled = false;
-			system.emitters[2].enabled = false;
 			
-			system.emitters[1].range = new ParticleRange();
-			system.emitters[1].animator = spray;
-			system.emitters[1].birthRate = 80;
+			emitter2.range = new ParticleRange();
+			emitter2.animator = spray;
+			emitter2.birthRate = 80;
 			
-			system.emitters[2].range = new CubeRange(200, 0, 0);
-			system.emitters[2].animator.velocityMin.z = 200;
-			system.emitters[2].animator.velocityMax.z = 200;
-			system.emitters[2].birthRate = 100;
+			emitter3.range = new CubeRange(200, 0, 0);
+			emitter3.animator.velocityMin.z = 200;
+			emitter3.animator.velocityMax.z = 200;
+			emitter3.birthRate = 100;
 			
-			system.emitters[0].addChild(new Sphere(8, 6, 4, fill1));
-			system.emitters[1].addChild(new Sphere(8, 6, 4, fill1));
-			system.emitters[1].addChild(new Cube(5, 5, 50, 1, 1, 1, fill2)).z = 25;
-			system.emitters[2].addChild(new Plane(200, 10, 1, 1, 0.5, 0.5, false, fill1, null));
+			emitter1.addChild(new Sphere(8, 6, 4, fill1));
+			emitter2.addChild(new Sphere(8, 6, 4, fill1));
+			emitter2.addChild(new Cube(5, 5, 50, 1, 1, 1, fill2)).z = 25;
+			emitter3.addChild(new Plane(200, 10, 1, 1, 0.5, 0.5, false, fill1, null));
+			
+			system = new ParticleSystem(material);
+			system.addEmiter(emitter1);
+			system.addEmiter(emitter2);
+			system.addEmiter(emitter3);
 			
 			for each (var item:ParticleEmitter in system.emitters) 
 			{

@@ -94,7 +94,7 @@ package example11_rendertexture
 			{
 				var cloned:Mesh = cube.reference() as Mesh;
 				cloned.setPositionXYZ(Random.number( -100, 100), Random.number( -100, 100), Random.number(10, 100));
-				cloned.colorTransform = Palette.getMultiplyColor(Random.integer(0, 0xffffff), 1);
+				cloned.colorTransform = Palette.getMultiplyColor(Random.integer(0, 0xffffff), 1, 1);
 				result.addChild(cloned);
 			}
 			

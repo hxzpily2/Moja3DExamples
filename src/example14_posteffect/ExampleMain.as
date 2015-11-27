@@ -13,6 +13,7 @@ package example14_posteffect
 	import net.morocoshi.moja3d.renderer.MaskColor;
 	import net.morocoshi.moja3d.resources.ImageTextureResource;
 	import net.morocoshi.moja3d.shaders.render.SpecularShader;
+	import net.morocoshi.moja3d.shaders.render.VertexColorShader;
 	
 	[SWF(width = "640", height = "480")]
 	
@@ -48,9 +49,9 @@ package example14_posteffect
 				
 				var fill:Material = new FillMaterial([0x800000, 0x008000, 0x000080][i], 1, true);
 				fill.shaderList.addShader(new SpecularShader(30, 1, false));
-				fill.culling = "none";
+				fill.shaderList.addShader(new VertexColorShader());
 				mesh.setMaterialToAllSurfaces(fill);
-				mesh.renderMask = [MaskColor.RED, MaskColor.GREEN, MaskColor.BLUE][i];
+				mesh.renderMask = [MaskColor.RED, MaskColor.BLACK, MaskColor.BLUE][i];
 				scene.root.addChild(mesh);
 			}
 			

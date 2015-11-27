@@ -12,6 +12,7 @@ package example10_depthshadow
 	import net.morocoshi.moja3d.shaders.render.LambertShader;
 	import net.morocoshi.moja3d.shaders.render.SpecularShader;
 	import net.morocoshi.moja3d.shaders.render.TextureShader;
+	import net.morocoshi.moja3d.shaders.render.VertexColorShader;
 	import net.morocoshi.moja3d.shaders.shadow.ShadowFadeType;
 	import net.morocoshi.moja3d.shaders.shadow.ShadowShader;
 	
@@ -64,11 +65,11 @@ package example10_depthshadow
 			for each (var parserMaterial:ParserMaterial in parser.materials) 
 			{
 				parserMaterial.shaderList.removeAllShader();
-				parserMaterial.culling = "none";
 				parserMaterial.shaderList.addShader(new TextureShader(new ImageTextureResource(new Diffuse), null));
 				parserMaterial.shaderList.addShader(shadowShader);
 				parserMaterial.shaderList.addShader(new LambertShader());
 				parserMaterial.shaderList.addShader(new SpecularShader(100, 1, false));
+				parserMaterial.shaderList.addShader(new VertexColorShader());
 			}
 			
 			scene.root.upload(scene.context3D, true);

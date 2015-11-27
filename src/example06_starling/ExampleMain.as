@@ -2,9 +2,9 @@ package example06_starling
 {
 	import example06_starling.starling.StarlingBackLayer;
 	import example06_starling.starling.StarlingFrontLayer;
+	import flash.geom.ColorTransform;
 	import net.morocoshi.moja3d.events.Event3D;
 	import net.morocoshi.moja3d.loader.M3DParser;
-	import net.morocoshi.moja3d.shaders.render.SpecularShader;
 	import starling.core.Starling;
 	
 	[SWF(width = "640", height = "480")]
@@ -56,7 +56,7 @@ package example06_starling
 			
 			
 			//ティーポット
-			new M3DParser().parse(new Model, scene.root).materials[0].shaderList.addShader(new SpecularShader(1, 0.5, false));
+			new M3DParser().parse(new Model, scene.root).objects[0].colorTransform = new ColorTransform(0.3, 0.5, 0.7);
 			
 			//まとめてアップロード
 			scene.root.upload(scene.context3D, true, false);

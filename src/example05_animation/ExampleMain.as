@@ -8,7 +8,7 @@ package example05_animation
 	import net.morocoshi.moja3d.animation.MotionController;
 	import net.morocoshi.moja3d.animation.MotionData;
 	import net.morocoshi.moja3d.loader.M3DParser;
-	import net.morocoshi.moja3d.objects.Skin;
+	import net.morocoshi.moja3d.objects.SkinContainer;
 	
 	[SWF(width = "640", height = "480")]
 	
@@ -51,7 +51,7 @@ package example05_animation
 			scene.root.upload(scene.context3D, true, false);
 			
 			//モーションを適用するスキンを特定しておきます
-			var skinObject:Skin = parser.hierarchy[2] as Skin;
+			var skinObject:SkinContainer = parser.hierarchy[0] as SkinContainer;
 			
 			//各種モーションデータをパースします。
 			//第二引数では補完方法がベジェ曲線だった場合に曲線上に打つキーフレームの間隔を秒単位で指定します。

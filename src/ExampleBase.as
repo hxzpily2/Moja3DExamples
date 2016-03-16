@@ -20,7 +20,7 @@ package
 		private var centerZ:Number;
 		private var distance:Number;
 		
-		public function ExampleBase(centerZ:Number = 0, distance:Number = 150) 
+		public function ExampleBase(centerZ:Number = 0, distance:Number = 150, addDefaultLight:Boolean = true) 
 		{
 			this.centerZ = centerZ;
 			this.distance = distance;
@@ -33,6 +33,12 @@ package
 			scene = new Scene3D();
 			scene.addEventListener(Event.COMPLETE, scene_completeHandler);
 			scene.init(stage.stage3Ds[0], Context3DRenderMode.AUTO, Context3DProfile.BASELINE);
+			
+			if (addDefaultLight)
+			{
+				scene.root.addChild(new AmbientLight(0xffffff, 0.7));
+				scene.root.addChild(new DirectionalLight(0xffffff, 0.8)).lookAtXYZ(10, 10, -10);
+			}
 		}
 		
 		private function scene_completeHandler(e:Event):void 
@@ -50,9 +56,6 @@ package
 			
 			LightSetting.numDirectionalLights = 2;
 			LightSetting.numOmniLights = 0;
-			
-			scene.root.addChild(new AmbientLight(0xffffff, 0.7));
-			scene.root.addChild(new DirectionalLight(0xffffff, 0.8)).lookAtXYZ(10, 10, -10);
 			
 			buttons = new LabelButtonList(true, 10, 80);
 			buttons.setPosition(10, 170);

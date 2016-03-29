@@ -1,6 +1,7 @@
-package example15_toonshader 
+package example16_toonshader2 
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -8,29 +9,32 @@ package example15_toonshader
 	import net.morocoshi.moja3d.loader.M3DParser;
 	import net.morocoshi.moja3d.materials.ParserMaterial;
 	import net.morocoshi.moja3d.materials.TriangleFace;
-	import net.morocoshi.moja3d.objects.AmbientLight;
 	import net.morocoshi.moja3d.objects.DirectionalLight;
 	import net.morocoshi.moja3d.objects.Mesh;
 	import net.morocoshi.moja3d.resources.ImageTextureResource;
-	import net.morocoshi.moja3d.shaders.render.ToonShader;
+	import net.morocoshi.moja3d.shaders.render.ToonTextureShader;
 	
 	[SWF(width = "640", height = "480")]
 	
 	/**
-	 * トゥーンシェーダーのサンプル
+	 * トゥーンシェーダーのサンプル2
 	 * 
 	 * @author tencho
 	 */
 	public class ExampleMain extends ExampleBase 
 	{
 		private var parser:M3DParser;
-		private var toonShader:ToonShader;
+		private var toonShader:ToonTextureShader;
 		private var toonImages:Array;
 		
 		[Embed(source = "asset/model.m3d", mimeType = "application/octet-stream")] private var Model:Class;
-		[Embed(source = "asset/toonshadow1.png")] private var ToonImage1:Class;
-		[Embed(source = "asset/toonshadow2.png")] private var ToonImage2:Class;
-		[Embed(source = "asset/toonshadow3.png")] private var ToonImage3:Class;
+		[Embed(source = "asset/texture1.jpg")] private var Texture1:Class;
+		[Embed(source = "asset/texture2.jpg")] private var Texture2:Class;
+		[Embed(source = "asset/texture3.jpg")] private var Texture3:Class;
+		[Embed(source = "asset/texture4.jpg")] private var Texture4:Class;
+		[Embed(source = "asset/toneshadow1.png")] private var ToonImage1:Class;
+		[Embed(source = "asset/toneshadow2.png")] private var ToonImage2:Class;
+		[Embed(source = "asset/toneshadow3.png")] private var ToonImage3:Class;
 		
 		public function ExampleMain() 
 		{
@@ -42,8 +46,8 @@ package example15_toonshader
 			toonImages = [new ToonImage1(), new ToonImage2(), new ToonImage3()];
 			
 			scene.view.backgroundColor = 0x1A6EAF;
-			scene.root.addChild(new AmbientLight(0xffffff, 0.3));
 			scene.root.addChild(new DirectionalLight(0xffffff, 1)).lookAtXYZ(2, -1, -1);
+			scene.root.addChild(new DirectionalLight(0xffffff, 0)).lookAtXYZ(-2, -1, -1);
 			
 			parser = new M3DParser();
 			parser.addEventListener(Event.COMPLETE, parser_completeHandler);
@@ -54,21 +58,25 @@ package example15_toonshader
 		{
 			parser.removeEventListener(Event.COMPLETE, parser_completeHandler);
 			
-			toonShader = new ToonShader(new ImageTextureResource(toonImages[0]));
+			var diffuse1:ImageTextureResource =　new ImageTextureResource(new Texture1);
+			var diffuse2:ImageTextureResource =　new ImageTextureResource(new Texture2);
+			var diffuse3:ImageTextureResource =　new ImageTextureResource(new Texture3);
+			var diffuse4:ImageTextureResource =　new ImageTextureResource(new Texture4);
+			var toneMap:ImageTextureResource =　new ImageTextureResource(toonImages[0]);
+			
+			toonShader = new ToonTextureShader(diffuse1, diffuse2, diffuse3, diffuse4, null, toneMap);
+			
 			for each(var material:ParserMaterial in parser.materials)
 			{
 				material.culling = TriangleFace.BOTH;
 				material.shaderList.removeAllShader();
-				material.addTextureShader();
 				material.shaderList.addShader(toonShader);
 			}
-			
-			parser.resourcePack.attachTo(scene.root.getResources(true), false);
 			scene.root.upload(scene.context3D, true);
 			
-			for (var i:int = 0; i < 3; i++ )
+			for (var i:int = 0; i < toonImages.length; i++)
 			{
-				createButton(i);
+				createButton(i, toonImages[i].bitmapData);
 			}
 			
 			buttons.addButton("OUTLINE", switchOutlineEnabled);
@@ -87,30 +95,22 @@ package example15_toonshader
 			}
 		}
 		
-		private function createButton(i:int):void 
+		private function createButton(i:int, image:BitmapData):void 
 		{
-			var clip:Sprite = new Sprite();
-			clip.x = i * 100 + 110;
-			clip.y = 25;
-			var image:Bitmap = toonImages[i]
-			image.width = 80;
-			image.height = 80;
-			clip.addChild(image);
-			stage.addChild(clip);
-			
 			var resource:ImageTextureResource = new ImageTextureResource(image);
 			resource.upload(scene.context3D);
 			
+			var clip:Sprite = new Sprite();
+			clip.addChild(new Bitmap(image));
+			clip.width = clip.height = 80;
+			clip.x = i * 100 + 110;
+			clip.y = 25;
 			clip.buttonMode = true;
 			clip.addEventListener(MouseEvent.CLICK, function(e:Event):void
 			{
-				setToonTexture(resource);
+				toonShader.toneMap = resource;
 			});
-		}
-		
-		private function setToonTexture(resource:ImageTextureResource):void 
-		{
-			toonShader.resource = resource;
+			stage.addChild(clip);
 		}
 		
 		override public function tick():void 

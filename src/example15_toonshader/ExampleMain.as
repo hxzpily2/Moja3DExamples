@@ -1,6 +1,7 @@
 package example15_toonshader 
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -25,12 +26,11 @@ package example15_toonshader
 	{
 		private var parser:M3DParser;
 		private var toonShader:ToonShader;
-		private var toonImages:Array;
 		
 		[Embed(source = "asset/model.m3d", mimeType = "application/octet-stream")] private var Model:Class;
-		[Embed(source = "asset/toonshadow1.png")] private var ToonImage1:Class;
-		[Embed(source = "asset/toonshadow2.png")] private var ToonImage2:Class;
-		[Embed(source = "asset/toonshadow3.png")] private var ToonImage3:Class;
+		[Embed(source = "asset/tone1.png")] private var ToneMap1:Class;
+		[Embed(source = "asset/tone2.png")] private var ToneMap2:Class;
+		[Embed(source = "asset/tone3.png")] private var ToneMap3:Class;
 		
 		public function ExampleMain() 
 		{
@@ -39,8 +39,6 @@ package example15_toonshader
 		
 		override public function init():void 
 		{
-			toonImages = [new ToonImage1(), new ToonImage2(), new ToonImage3()];
-			
 			scene.view.backgroundColor = 0x1A6EAF;
 			scene.root.addChild(new AmbientLight(0xffffff, 0.3));
 			scene.root.addChild(new DirectionalLight(0xffffff, 1)).lookAtXYZ(2, -1, -1);
@@ -54,7 +52,10 @@ package example15_toonshader
 		{
 			parser.removeEventListener(Event.COMPLETE, parser_completeHandler);
 			
-			toonShader = new ToonShader(new ImageTextureResource(toonImages[0]));
+			var toneImages:Array = [new ToneMap1(), new ToneMap2(), new ToneMap3()];
+			
+			//LambertShaderの代わりにToonShaderを使う
+			toonShader = new ToonShader(new ImageTextureResource(toneImages[0]));
 			for each(var material:ParserMaterial in parser.materials)
 			{
 				material.culling = TriangleFace.BOTH;
@@ -66,9 +67,10 @@ package example15_toonshader
 			parser.resourcePack.attachTo(scene.root.getResources(true), false);
 			scene.root.upload(scene.context3D, true);
 			
-			for (var i:int = 0; i < 3; i++ )
+			//トーンマップ切り替え用ボタンの生成
+			for (var i:int = 0; i < toneImages.length; i++)
 			{
-				createButton(i);
+				createButton(i, toneImages[i].bitmapData);
 			}
 			
 			buttons.addButton("OUTLINE", switchOutlineEnabled);
@@ -81,36 +83,28 @@ package example15_toonshader
 			{
 				var m:Mesh = parser.objects[i] as Mesh;
 				m.outlineEnabled = !m.outlineEnabled;
-				m.outlineThickness = 2;
+				m.outlineThickness = 3;
 				m.outlineColor = 0x000000;
 				m.outlineAlpha = 1;
 			}
 		}
 		
-		private function createButton(i:int):void 
+		private function createButton(i:int, image:BitmapData):void 
 		{
-			var clip:Sprite = new Sprite();
-			clip.x = i * 100 + 110;
-			clip.y = 25;
-			var image:Bitmap = toonImages[i]
-			image.width = 80;
-			image.height = 80;
-			clip.addChild(image);
-			stage.addChild(clip);
-			
 			var resource:ImageTextureResource = new ImageTextureResource(image);
 			resource.upload(scene.context3D);
 			
+			var clip:Sprite = new Sprite();
+			clip.addChild(new Bitmap(image));
+			clip.width = clip.height = 80;
+			clip.x = i * 100 + 110;
+			clip.y = 25;
 			clip.buttonMode = true;
 			clip.addEventListener(MouseEvent.CLICK, function(e:Event):void
 			{
-				setToonTexture(resource);
+				toonShader.resource = resource;
 			});
-		}
-		
-		private function setToonTexture(resource:ImageTextureResource):void 
-		{
-			toonShader.resource = resource;
+			stage.addChild(clip);
 		}
 		
 		override public function tick():void 

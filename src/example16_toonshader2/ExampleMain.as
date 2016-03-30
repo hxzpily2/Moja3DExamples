@@ -25,16 +25,15 @@ package example16_toonshader2
 	{
 		private var parser:M3DParser;
 		private var toonShader:ToonTextureShader;
-		private var toonImages:Array;
 		
 		[Embed(source = "asset/model.m3d", mimeType = "application/octet-stream")] private var Model:Class;
 		[Embed(source = "asset/texture1.jpg")] private var Texture1:Class;
 		[Embed(source = "asset/texture2.jpg")] private var Texture2:Class;
 		[Embed(source = "asset/texture3.jpg")] private var Texture3:Class;
 		[Embed(source = "asset/texture4.jpg")] private var Texture4:Class;
-		[Embed(source = "asset/toneshadow1.png")] private var ToonImage1:Class;
-		[Embed(source = "asset/toneshadow2.png")] private var ToonImage2:Class;
-		[Embed(source = "asset/toneshadow3.png")] private var ToonImage3:Class;
+		[Embed(source = "asset/tone1.png")] private var ToneMap1:Class;
+		[Embed(source = "asset/tone2.png")] private var ToneMap2:Class;
+		[Embed(source = "asset/tone3.png")] private var ToneMap3:Class;
 		
 		public function ExampleMain() 
 		{
@@ -43,29 +42,27 @@ package example16_toonshader2
 		
 		override public function init():void 
 		{
-			toonImages = [new ToonImage1(), new ToonImage2(), new ToonImage3()];
-			
-			scene.view.backgroundColor = 0x1A6EAF;
+			//※平行光源は1個だけで、強度は1にしておく（重要）
 			scene.root.addChild(new DirectionalLight(0xffffff, 1)).lookAtXYZ(2, -1, -1);
-			scene.root.addChild(new DirectionalLight(0xffffff, 0)).lookAtXYZ(-2, -1, -1);
 			
+			//このモデルにテクスチャは含まれないのでパースに延滞は発生しない（COMPLETEイベントを待たなくていい）
 			parser = new M3DParser();
-			parser.addEventListener(Event.COMPLETE, parser_completeHandler);
 			parser.parse(new Model, scene.root);
-		}
-		
-		private function parser_completeHandler(e:Event):void 
-		{
-			parser.removeEventListener(Event.COMPLETE, parser_completeHandler);
 			
+			var toneImages:Array = [new ToneMap1(), new ToneMap2(), new ToneMap3()];
+			
+			//4段階の明るさのテクスチャ画像。diffuse1は一番明るく、diffuse4は一番暗い。
 			var diffuse1:ImageTextureResource =　new ImageTextureResource(new Texture1);
 			var diffuse2:ImageTextureResource =　new ImageTextureResource(new Texture2);
 			var diffuse3:ImageTextureResource =　new ImageTextureResource(new Texture3);
 			var diffuse4:ImageTextureResource =　new ImageTextureResource(new Texture4);
-			var toneMap:ImageTextureResource =　new ImageTextureResource(toonImages[0]);
 			
+			//トーンマップの色は右から明るい順に0xFFFFFF,0xAAAAAA,0x555555,0x000000の4色にしておく
+			//このそれぞれの階調がdiffuse1～diffuse4のテクスチャに割り当てられる
+			var toneMap:ImageTextureResource =　new ImageTextureResource(toneImages[0]);
+			
+			//TextureShaderの代わりにToonTextureShaderを使う
 			toonShader = new ToonTextureShader(diffuse1, diffuse2, diffuse3, diffuse4, null, toneMap);
-			
 			for each(var material:ParserMaterial in parser.materials)
 			{
 				material.culling = TriangleFace.BOTH;
@@ -74,22 +71,26 @@ package example16_toonshader2
 			}
 			scene.root.upload(scene.context3D, true);
 			
-			for (var i:int = 0; i < toonImages.length; i++)
+			//トーンマップ切り替え用ボタンの生成
+			for (var i:int = 0; i < toneImages.length; i++)
 			{
-				createButton(i, toonImages[i].bitmapData);
+				createButton(i, toneImages[i].bitmapData);
 			}
 			
 			buttons.addButton("OUTLINE", switchOutlineEnabled);
 			switchOutlineEnabled();
 		}
 		
+		/**
+		 * アウトラインのON/OFF
+		 */
 		private function switchOutlineEnabled():void 
 		{
 			for (var i:int = 0; i < 3; i++) 
 			{
 				var m:Mesh = parser.objects[i] as Mesh;
 				m.outlineEnabled = !m.outlineEnabled;
-				m.outlineThickness = 2;
+				m.outlineThickness = 3;
 				m.outlineColor = 0x000000;
 				m.outlineAlpha = 1;
 			}

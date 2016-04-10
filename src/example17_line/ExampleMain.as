@@ -28,11 +28,11 @@ package example17_line
 			scene.view.backgroundColor = 0x111111;
 			
 			var torus:Line3D = createTorus();
-			torus.renderMask = MaskColor.BLACK;
+			//Line3Dでは、ジオメトリをuploadする際にライン用メッシュを再生成します。
+			//ラインの頂点を動かすなどして変形させた場合は再uploadが必要になります。
 			torus.lineGeometry.upload(scene.context3D);
 			
 			beam = new Line3D();
-			beam.renderMask = MaskColor.RED;
 			var seg:LineSegment = beam.lineGeometry.addSegment(6);
 			for (var i:int = 0; i < 10; i++) 
 			{
@@ -42,9 +42,16 @@ package example17_line
 			scene.root.addChild(torus);
 			scene.root.addChild(beam);
 			
+			//黄色いラインを発光させるポストエフェクト設定
+			torus.renderMask = MaskColor.BLACK;
+			beam.renderMask = MaskColor.RED;
 			scene.filters.push(new BloomFilter3D(0, 0, 5, 0.05, 15, 50, 2, MaskColor.RED));
 		}
 		
+		/**
+		 * トーラスっぽいラインを生成する
+		 * @return
+		 */
 		private function createTorus():Line3D 
 		{
 			var torus:Line3D = new Line3D();
@@ -64,6 +71,7 @@ package example17_line
 				segment.addPoint(tx, ty, tz, rgb, 1);
 			}
 			segment.close();
+			//基本的に動かないラインの場合は、境界ボックスを生成することでdrawCallを抑えられます。
 			torus.calculateBounds();
 			
 			return torus;
@@ -71,6 +79,7 @@ package example17_line
 		
 		override public function tick():void 
 		{
+			//黄色いラインの各頂点を動かし、再uploadする
 			var time:Number = getTimer() / 500;
 			var n:int = beam.lineGeometry.segments[0].points.length;
 			for (var i:int = 0; i < n; i++) 

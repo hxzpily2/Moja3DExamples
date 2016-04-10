@@ -40,6 +40,7 @@ package example18_mouseinteraction
 		{
 			scene.view.backgroundColor = 0x111111;
 			
+			//各種プリミティブの生成（ティーポットは頂点アルファを無効にすることでdrawCallを減らしてます）
 			var teapot:Mesh = new M3DParser().parse(new Model).objects[0] as Mesh;
 			var teapotShader:ShaderList = teapot.surfaces[0].material.shaderList;
 			FillShader(teapotShader.getShaderAs(FillShader)).color = 0x333333;
@@ -47,6 +48,8 @@ package example18_mouseinteraction
 			var cube:Cube = new Cube(50, 50, 50, 1, 1, 1, new FillMaterial(0x333333, 1, true));
 			var ball:Sphere = new Sphere(35, 16, 12, new FillMaterial(0x333333, 1, true));
 			var plane:Plane = new Plane(350, 150, 1, 1, 0.5, 0.5, false, new FillMaterial(0x252525, 1, true), null);
+			
+			//三角ポリゴン用ライン
 			faceLine = new Line3D();
 			faceLine.zbias = 0.01;
 			faceLine.visible = false;
@@ -56,6 +59,7 @@ package example18_mouseinteraction
 			seg.addPoint(0, 0, 0);
 			seg.close();
 			
+			//法線用ライン
 			normalLine = new Object3D();
 			normalLine.mouseEnabled = normalLine.mouseChildren = false;
 			normalLine.addChild(new Sphere(2, 4, 4, new FillMaterial(0xff0000, 1, false)));

@@ -46,8 +46,7 @@ package example18_mouseinteraction
 			VertexColorShader(teapotShader.getShaderAs(VertexColorShader)).alphaBlend = "";
 			var cube:Cube = new Cube(50, 50, 50, 1, 1, 1, new FillMaterial(0x333333, 1, true));
 			var ball:Sphere = new Sphere(35, 16, 12, new FillMaterial(0x333333, 1, true));
-			var plane:Plane = new Plane(350, 150, 1, 1, 0.5, 0.5, false, new FillMaterial(0x444444, 1, true), null);
-			
+			var plane:Plane = new Plane(350, 150, 1, 1, 0.5, 0.5, false, new FillMaterial(0x252525, 1, true), null);
 			faceLine = new Line3D();
 			faceLine.zbias = 0.01;
 			faceLine.visible = false;
@@ -86,6 +85,8 @@ package example18_mouseinteraction
 			scene.addEventListener(MouseEvent3D.MOUSE_MOVE, mouseMove);
 			
 			scene.root.upload(scene.context3D, true);
+			
+			//マウスイベントを有効にする
 			scene.startMouseInteraction(stage, true, true, 33);
 		}
 		

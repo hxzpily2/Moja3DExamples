@@ -53,7 +53,7 @@ package example03_camera
 				mesh.setPositionXYZ(Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 100 - 50);
 				scene.root.addChild(mesh);
 			}
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
 			
 			camera1 = new Camera3D();
 			camera1.setPositionXYZ(70, 70, 70);

@@ -33,7 +33,7 @@ package example13_scale9plane
 			plane = new Scale9Plane(256, 256, scale9, 0.5, 0.5, true, material, material);
 			scene.root.addChild(plane);
 			
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
 		}
 		
 		

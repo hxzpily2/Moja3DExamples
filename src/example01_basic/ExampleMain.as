@@ -111,8 +111,8 @@ package example01_basic
 			scene.root.addChild(plane);
 			
 			//モデルの表示に必要なリソースをアップロードする
-			sphere.upload(scene.context3D, false, false);
-			plane.upload(scene.context3D, false, false);
+			sphere.upload(scene.context3D, false);
+			plane.upload(scene.context3D, false);
 			
 			//毎フレーム処理
 			stage.addEventListener(Event.ENTER_FRAME, stage_enterFrameHandler);

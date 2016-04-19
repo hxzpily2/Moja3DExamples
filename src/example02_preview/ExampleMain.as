@@ -60,7 +60,7 @@ package example02_preview
 			}
 			
 			//シーン内にある全てのリソースをまとめてアップロード
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
 		}
 		
 	}

@@ -59,7 +59,7 @@ package example06_starling
 			new M3DParser().parse(new Model, scene.root).objects[0].colorTransform = new ColorTransform(0.3, 0.5, 0.7);
 			
 			//まとめてアップロード
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
 		}
 		
 		private function scene_contextPostClearHandler(e:Event3D):void 

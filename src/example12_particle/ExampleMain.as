@@ -52,7 +52,7 @@ package example12_particle
 			//パーティクル生成
 			buildParticles();
 			
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
 			
 			
 			//ボタンリスト

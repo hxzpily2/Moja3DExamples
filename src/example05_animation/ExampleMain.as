@@ -48,7 +48,7 @@ package example05_animation
 			parser.removeEventListener(Event.COMPLETE, parser_completeHandler);
 			
 			//まとめてアップロード
-			scene.root.upload(scene.context3D, true, false);
+			scene.root.upload(scene.context3D, true);
 			
 			//モーションを適用するスキンを特定しておきます
 			var skinObject:SkinContainer = parser.hierarchy[0] as SkinContainer;

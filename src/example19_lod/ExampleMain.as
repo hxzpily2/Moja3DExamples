@@ -13,8 +13,6 @@ package example19_lod
 	 */
 	public class ExampleMain extends ExampleBase 
 	{
-		[Embed(source = "asset/teapot.m3d", mimeType = "application/octet-stream")] private var Model:Class;
-		
 		public function ExampleMain() 
 		{
 			super(0, 700);

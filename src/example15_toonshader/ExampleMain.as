@@ -86,6 +86,7 @@ package example15_toonshader
 				m.outlineThickness = 3;
 				m.outlineColor = 0x000000;
 				m.outlineAlpha = 1;
+				m.outlineFixed = true;
 			}
 		}
 		

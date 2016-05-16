@@ -39,11 +39,12 @@ package example10_depthshadow
 		override public function init():void 
 		{
 			//ライト
-			sun = new DirectionalLight(0xffffff, 2);
+			sun = new DirectionalLight(0xffffff, 1.8);
 			sun.mainShadow = new Shadow();
 			sun.mainShadow.setShadowArea(70, 70);
 			sun.mainShadow.depthBias *= 50;
-			sun.mainShadow.zNear = -80; 
+			sun.mainShadow.zNear = -80;
+			scene.root.getChildren(false, true, DirectionalLight)[0].remove();
 			scene.root.addChild(sun).lookAtXYZ(10, 10, -10);
 			
 			//ティーポット

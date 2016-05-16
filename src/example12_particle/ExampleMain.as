@@ -180,7 +180,7 @@ package example12_particle
 				scene.root.addChild(item);
 			}
 			
-			system.setContetx3D(scene.context3D);
+			system.setContext3D(scene.context3D);
 			system.play();
 			
 			scene.root.addChild(system);

@@ -77,7 +77,7 @@ package example08_textureresource
 			//画像を再設定する。第二引数をtrueにするとPNG画像に透過要素があるかチェックして不透明画像ならdrawCallが減る可能性がある。でもチェックが重い。
 			imageResource.setBitmapResource(bitmap, true);
 			//アップロード
-			imageResource.upload(scene.context3D, false);
+			imageResource.upload(scene.context3D);
 		}
 		
 		/**

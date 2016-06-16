@@ -11,6 +11,7 @@ package example16_toonshader2
 	import net.morocoshi.moja3d.materials.TriangleFace;
 	import net.morocoshi.moja3d.objects.DirectionalLight;
 	import net.morocoshi.moja3d.objects.Mesh;
+	import net.morocoshi.moja3d.objects.Outline;
 	import net.morocoshi.moja3d.resources.ImageTextureResource;
 	import net.morocoshi.moja3d.shaders.render.ToonTextureShader;
 	
@@ -77,6 +78,11 @@ package example16_toonshader2
 				createButton(i, toneImages[i].bitmapData);
 			}
 			
+			for each(var mesh:Mesh in parser.getObjectsAs(Mesh)) 
+			{
+				mesh.outline = new Outline(3, 0x000000, 1, true);
+			}
+			
 			buttons.addButton("OUTLINE", switchOutlineEnabled);
 			switchOutlineEnabled();
 		}
@@ -86,14 +92,9 @@ package example16_toonshader2
 		 */
 		private function switchOutlineEnabled():void 
 		{
-			for (var i:int = 0; i < 3; i++) 
+			for each(var mesh:Mesh in parser.getObjectsAs(Mesh)) 
 			{
-				var m:Mesh = parser.objects[i] as Mesh;
-				m.outlineEnabled = !m.outlineEnabled;
-				m.outlineThickness = 3;
-				m.outlineColor = 0x000000;
-				m.outlineAlpha = 1;
-				m.outlineFixed = true;
+				mesh.outline.enabled = !mesh.outline.enabled;
 			}
 		}
 		
